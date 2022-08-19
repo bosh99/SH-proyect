@@ -1,4 +1,3 @@
-from re import A
 import pandas as pn
 
 medellin = pn.read_csv('MedellinSH.csv', sep=';')
