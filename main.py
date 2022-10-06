@@ -40,10 +40,11 @@ for row in medellin.itertuples():
             
 '''
     This function implements the selected algorithm, it works with a priority queue (import above) its evaluated with the 
-    product of row[6](SH) and row[4](length).
+    product of row[6](SH) and row[4](length). if cuando llegue al destino pare 
 '''
-def calculate_distances(graph,starting_vertex):
+def calculate_distances(graph,starting_vertex,ending_vertex):
     distances = {vertex: float('infinity') for vertex in graph} 
+    path = [starting_vertex]
     distances[starting_vertex] = 0
 
     pq = [(0,starting_vertex)]
@@ -51,21 +52,28 @@ def calculate_distances(graph,starting_vertex):
     while len(pq) > 0:
         current_distance, current_vertex = heapq.heappop(pq)
 
-        if current_distance > distances[current_vertex]:
-            continue
+        if current_vertex == ending_vertex:
+                path.append(current_vertex)
+                break
         i = 0
         for neighbor in graph[current_vertex]:
             distance = current_distance + (float(graph[current_vertex][i][1])*float(graph[current_vertex][i][2]))
+            neighbor_ = neighbor[0]
 
-            try:
-                if distance < distances[neighbor]:
-                    distances[neighbor] = distance
-                    heapq.heappush(pq, (distance, neighbor))
-                i+=1
-            except:
-                break
-    return distances
+            if distance < distances[neighbor_]:
+                distances[neighbor[0]] = distance
+                #path[neighbor_] = current_vertex
+                if current_vertex not in path:
+                    path.append(current_vertex)
+                heapq.heappush(pq, (distance, neighbor[0]))
+            i+=1
+                
+    pprint.pprint(path)
+    return distances[ending_vertex] 
 
-#print(calculate_distances(graph,"(-75.5728073, 6.2089065)"))
+def check_route():
+    pass
+            
+print(calculate_distances(graph,"(-75.5705202, 6.2106275)","(-75.570427, 6.2105879)"))
 
-pprint.pprint(graph["(-75.5705202, 6.2106275)"])
+#pprint.pprint(graph["(-75.5705202, 6.2106275)"])
