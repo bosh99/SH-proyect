@@ -1,10 +1,11 @@
+import traceback
 import pandas as pn
 import pprint
 import heapq
 medellin = pn.read_csv('MedellinSH.csv', sep=';')
 medellin.harassmentRisk = medellin.harassmentRisk.fillna(medellin.harassmentRisk.mean())
 
-#--------------------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------------------------------------------------#
 
 o_unicos = medellin.origin.unique()
 graph = {}
@@ -44,7 +45,8 @@ for row in medellin.itertuples():
 '''
 def calculate_distances(graph,starting_vertex,ending_vertex):
     distances = {vertex: float('infinity') for vertex in graph} 
-    path = [starting_vertex]
+    path = []
+    tracker = {vertex: float('infinity') for vertex in graph} 
     distances[starting_vertex] = 0
 
     pq = [(0,starting_vertex)]
@@ -62,17 +64,18 @@ def calculate_distances(graph,starting_vertex,ending_vertex):
 
             if distance < distances[neighbor_]:
                 distances[neighbor[0]] = distance
-                #path[neighbor_] = current_vertex
+                tracker[neighbor] = graph[current_vertex]
                 if current_vertex not in path:
                     path.append(current_vertex)
                 heapq.heappush(pq, (distance, neighbor[0]))
             i+=1
-                
+    
     pprint.pprint(path)
     return distances[ending_vertex] 
 
 def check_route():
-    pass
+    camino = {vertex: float('infinity') for vertex in graph} 
+    
             
 print(calculate_distances(graph,"(-75.5705202, 6.2106275)","(-75.570427, 6.2105879)"))
 
