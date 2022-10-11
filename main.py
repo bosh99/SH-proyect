@@ -1,7 +1,10 @@
-import traceback
+from os import sep
+from tokenize import Double
 import pandas as pn
 import pprint
 import heapq
+from collections import deque
+
 medellin = pn.read_csv('MedellinSH.csv', sep=';')
 medellin.harassmentRisk = medellin.harassmentRisk.fillna(medellin.harassmentRisk.mean())
 
@@ -46,6 +49,7 @@ for row in medellin.itertuples():
 def calculate_distances(graph,starting_vertex,ending_vertex):
     distances = {vertex: float('infinity') for vertex in graph} 
     path = []
+
     tracker = {vertex: float('infinity') for vertex in graph} 
     distances[starting_vertex] = 0
 
@@ -64,19 +68,42 @@ def calculate_distances(graph,starting_vertex,ending_vertex):
 
             if distance < distances[neighbor_]:
                 distances[neighbor[0]] = distance
-                tracker[neighbor] = graph[current_vertex]
+                tracker[neighbor_] = current_vertex
                 if current_vertex not in path:
                     path.append(current_vertex)
                 heapq.heappush(pq, (distance, neighbor[0]))
             i+=1
     
-    pprint.pprint(path)
-    return distances[ending_vertex] 
+    print(distances[ending_vertex])
+    return tracker 
 
-def check_route():
-    camino = {vertex: float('infinity') for vertex in graph} 
-    
-            
-print(calculate_distances(graph,"(-75.5705202, 6.2106275)","(-75.570427, 6.2105879)"))
+def check_route(track, current, camino = deque()):
+    if track[current] == float('infinity'):
+        camino.appendleft(current)
+        return camino
+    else:
+        camino.appendleft(current)
+        return check_route(track, track[current], camino)
 
+def fix_path(camino = deque()):
+    new_camino = []
+
+    for element in range(len(camino)):
+        coord_ = camino.popleft()
+        coord = "{1},{0}".format(*coord_.split(',')).replace("(","").replace(")","").strip()
+        splited_cord = coord.split(",")
+        tup = (float(splited_cord[0])),float(splited_cord[1])
+        new_camino.append(tup)
+
+    return new_camino
+
+
+destino_ = "(-75.6088979, 6.2324933)" #Universidad de medellin !!!
+origen_ = "(-75.5808252, 6.2339338)"
+
+dist = calculate_distances(graph,origen_,destino_)
+route = check_route(dist,destino_)
+print(route)
+grafico = fix_path(route)
+print(grafico)
 #pprint.pprint(graph["(-75.5705202, 6.2106275)"])
