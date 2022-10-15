@@ -8,6 +8,10 @@ gmap = gmplot.GoogleMapPlotter(6.20020215,-75.5784848084993, 15, apikey=apikey)
 gmap.draw("map.html")
 
 path = zip(*grafico)
-
-gmap.plot(*path, edge_width=7, color='red')
+gmap.plot(*path, edge_width=7, color='cyan')
 gmap.draw('map.html')
+
+
+# No esta funcionando la Funcion del gmplot, se intentara arreglar para la tercera entrega
+# location = gmplot.GoogleMapPlotter.geocode('Universidad Eafit')
+# print(location)

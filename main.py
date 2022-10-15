@@ -1,5 +1,3 @@
-from os import sep
-from tokenize import Double
 import pandas as pn
 import pprint
 import heapq
@@ -46,9 +44,10 @@ for row in medellin.itertuples():
     This function implements the selected algorithm, it works with a priority queue (import above) its evaluated with the 
     product of row[6](SH) and row[4](length). if cuando llegue al destino pare 
 '''
-def calculate_distances(graph,starting_vertex,ending_vertex):
+def calculate_distances(graph,starting_vertex,ending_vertex,operation):
     distances = {vertex: float('infinity') for vertex in graph} 
     path = []
+    operators = {'+': lambda x,y : x+y, '*': lambda x,y: x*y}
 
     tracker = {vertex: float('infinity') for vertex in graph} 
     distances[starting_vertex] = 0
@@ -63,7 +62,7 @@ def calculate_distances(graph,starting_vertex,ending_vertex):
                 break
         i = 0
         for neighbor in graph[current_vertex]:
-            distance = current_distance + (float(graph[current_vertex][i][1])*float(graph[current_vertex][i][2]))
+            distance = current_distance + operators[operation](float(graph[current_vertex][i][1]),float(graph[current_vertex][i][2]))
             neighbor_ = neighbor[0]
 
             if distance < distances[neighbor_]:
@@ -73,10 +72,10 @@ def calculate_distances(graph,starting_vertex,ending_vertex):
                     path.append(current_vertex)
                 heapq.heappush(pq, (distance, neighbor[0]))
             i+=1
-    
-    print(distances[ending_vertex])
     return tracker 
-
+'''
+    Backtracking the path in order to only know the nodes that we can use in the path
+'''
 def check_route(track, current, camino = deque()):
     if track[current] == float('infinity'):
         camino.appendleft(current)
@@ -85,6 +84,9 @@ def check_route(track, current, camino = deque()):
         camino.appendleft(current)
         return check_route(track, track[current], camino)
 
+'''
+    This function fix the latitud and longitud of the coordinates in the CSV
+'''
 def fix_path(camino = deque()):
     new_camino = []
 
@@ -98,12 +100,10 @@ def fix_path(camino = deque()):
     return new_camino
 
 
-destino_ = "(-75.6088979, 6.2324933)" #Universidad de medellin !!!
-origen_ = "(-75.5808252, 6.2339338)"
+origen_ = "(-75.569105, 6.2109221)"
+destino_ = "(-75.6088979, 6.2324933)" 
 
-dist = calculate_distances(graph,origen_,destino_)
+
+dist = calculate_distances(graph,origen_,destino_,'*')
 route = check_route(dist,destino_)
-print(route)
 grafico = fix_path(route)
-print(grafico)
-#pprint.pprint(graph["(-75.5705202, 6.2106275)"])
