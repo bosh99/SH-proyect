@@ -1,12 +1,9 @@
 import pandas as pn
-import pprint
 import heapq
 from collections import deque
 
 medellin = pn.read_csv('MedellinSH.csv', sep=';')
 medellin.harassmentRisk = medellin.harassmentRisk.fillna(medellin.harassmentRisk.mean())
-
-#------------------------------------------------------------------------------------------------------------------------#
 
 o_unicos = medellin.origin.unique()
 graph = {}
@@ -20,7 +17,6 @@ for origin in o_unicos:
     Otherwise create one.
 
     The condition says that if the pair origin-destination is oneway, then create a new pair that is destiantion-origin.
-    Marked as _OneWay_. {origin : [(dest, sh, length),(),()]} ()
 '''
 for row in medellin.itertuples():
     s_harassament = row[6]
@@ -41,8 +37,7 @@ for row in medellin.itertuples():
             graph[row[3]] = [tup_one]
             
 '''
-    This function implements the selected algorithm, it works with a priority queue (import above) its evaluated with the 
-    product of row[6](SH) and row[4](length). if cuando llegue al destino pare 
+    This function implements the selected algorithm, it works with a priority queue (import above) its evaluated with either the product or the addition of row[6](SH) and row[4](length).
 '''
 def calculate_distances(graph,starting_vertex,ending_vertex,operation):
     distances = {vertex: float('infinity') for vertex in graph} 
@@ -74,7 +69,7 @@ def calculate_distances(graph,starting_vertex,ending_vertex,operation):
             i+=1
     return tracker 
 '''
-    Backtracking the path in order to only know the nodes that we can use in the path
+    Backtracking the path in order to only know the nodes that we must use in the path
 '''
 def check_route(track, current, camino = deque()):
     if track[current] == float('infinity'):
@@ -100,8 +95,8 @@ def fix_path(camino = deque()):
     return new_camino
 
 
-origen_ = "(-75.569105, 6.2109221)"
-destino_ = "(-75.6088979, 6.2324933)" 
+origen_ = "(-75.6041117, 6.2520059)" # Test 
+destino_ = "(-75.6088979, 6.2324933)" # Test
 
 
 dist = calculate_distances(graph,origen_,destino_,'*')
