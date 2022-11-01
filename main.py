@@ -1,5 +1,6 @@
 import pandas as pn
 import heapq
+import time
 from collections import deque
 
 medellin = pn.read_csv('MedellinSH.csv', sep=';')
@@ -24,7 +25,7 @@ for row in medellin.itertuples():
     origenes = row[2]
     destination = (row[3],row[6],row[4])
     origen = graph[origenes]
-    if origenes in graph:
+    if origenes in graph: 
         origen.append(destination)
     else:
         origen = destination
@@ -42,7 +43,7 @@ for row in medellin.itertuples():
 def calculate_distances(graph,starting_vertex,ending_vertex,operation):
     distances = {vertex: float('infinity') for vertex in graph} 
     path = []
-    operators = {'+': lambda x,y : x+y, '*': lambda x,y: x*y}
+    operators = {'+': lambda x,y : x+y, '*': lambda x,y: x*y, '^': lambda x,y : x*x + y}
 
     tracker = {vertex: float('infinity') for vertex in graph} 
     distances[starting_vertex] = 0
@@ -94,11 +95,26 @@ def fix_path(camino = deque()):
 
     return new_camino
 
+limite = 40
+def bar(segment, total, longitud):
+    percent = segment / total
+    completado = int(percent*longitud)
+    rest = longitud - completado
+    barra = f"[{'#' * completado}{'-'* rest}{percent: 2%}]"
+    return barra
 
-origen_ = "(-75.6041117, 6.2520059)" # Test 
+
+origen_ = "(-75.5805944, 6.3031537)" # Test 
 destino_ = "(-75.6088979, 6.2324933)" # Test
 
 
 dist = calculate_distances(graph,origen_,destino_,'*')
 route = check_route(dist,destino_)
 grafico = fix_path(route)
+
+for i in range(limite + 1):
+    time.sleep(0.05)
+    print(bar(i,limite,40), end = "\r")
+print("Ready!, you can open the HTML file via Live Server :)")
+
+
