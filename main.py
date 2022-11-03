@@ -19,7 +19,7 @@ for origin in o_unicos:
 
     The condition says that if the pair origin-destination is oneway, then create a new pair that is destiantion-origin.
 '''
-for row in medellin.itertuples():
+for row in medellin.itertuples(): #O(n)
     s_harassament = row[6]
     length = row[4]
     origenes = row[2]
@@ -43,7 +43,7 @@ for row in medellin.itertuples():
 def calculate_distances(graph,starting_vertex,ending_vertex,operation):
     distances = {vertex: float('infinity') for vertex in graph} 
     path = []
-    operators = {'+': lambda x,y : x+y, '*': lambda x,y: x*y, '^': lambda x,y : x*x + y}
+    operators = {'+': lambda x,y : x+y, '*': lambda x,y: x*y, '^': lambda x,y : x*x + y*y}
 
     tracker = {vertex: float('infinity') for vertex in graph} 
     distances[starting_vertex] = 0
@@ -68,6 +68,7 @@ def calculate_distances(graph,starting_vertex,ending_vertex,operation):
                     path.append(current_vertex)
                 heapq.heappush(pq, (distance, neighbor[0]))
             i+=1
+    print(distances[neighbor_])
     return tracker 
 '''
     Backtracking the path in order to only know the nodes that we must use in the path
@@ -95,6 +96,10 @@ def fix_path(camino = deque()):
 
     return new_camino
 
+'''
+    Loading bar
+'''
+
 limite = 40
 def bar(segment, total, longitud):
     percent = segment / total
@@ -103,18 +108,29 @@ def bar(segment, total, longitud):
     barra = f"[{'#' * completado}{'-'* rest}{percent: 2%}]"
     return barra
 
+'''
+    Function to create each path
+'''
+
+def crear_camino(graph,origen,destino,operacion):
+    dist = calculate_distances(graph,origen,destino,operacion)
+    route = check_route(dist,destino)
+    grafico = fix_path(route) 
+    return grafico
 
 origen_ = "(-75.5805944, 6.3031537)" # Test 
 destino_ = "(-75.6088979, 6.2324933)" # Test
 
+start_time = time.time()
+path_1 = crear_camino(graph,origen_,destino_,'*')
+path_2 = crear_camino(graph,origen_,destino_,'+')
+path_3 =crear_camino(graph,origen_,destino_,'^')
+print("Runtime execution => %s seconds. " % (time.time() - start_time))
 
-dist = calculate_distances(graph,origen_,destino_,'*')
-route = check_route(dist,destino_)
-grafico = fix_path(route)
-
+'''
+    Pretty print of the loading bar 
+'''
 for i in range(limite + 1):
     time.sleep(0.05)
     print(bar(i,limite,40), end = "\r")
 print("Ready!, you can open the HTML file via Live Server :)")
-
-
