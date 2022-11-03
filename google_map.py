@@ -5,7 +5,7 @@ from main import *
 '''
     Open the map with the Live Server Vscode extension, right click on the Html file after running 'main.py' and 'google_map.py'
 '''
-apikey ='AIzaSyCJfnE-UzN0Hc89l89kxl6D8MkVopUYtO4' # (your API key here)
+apikey ='' # (your API key here)
 gmap = gmplot.GoogleMapPlotter(6.20020215,-75.5784848084993, 15, apikey=apikey)
 
 path = zip(*path_1)
