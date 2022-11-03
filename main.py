@@ -118,8 +118,8 @@ def crear_camino(graph,origen,destino,operacion):
     grafico = fix_path(route) 
     return grafico
 
-origen_ = "(-75.5805944, 6.3031537)" # Test 
-destino_ = "(-75.6088979, 6.2324933)" # Test
+origen_ = "(-75.5778046, 6.2029412)" # Test 
+destino_ = "(-75.5762232, 6.266327)" # Test
 
 start_time = time.time()
 path_1 = crear_camino(graph,origen_,destino_,'*')
