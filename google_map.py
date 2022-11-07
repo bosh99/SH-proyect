@@ -19,4 +19,3 @@ gmap.plot(*path_3, edge_width=7, color='green')
 
 gmap.draw('map.html')
 
-

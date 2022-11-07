@@ -1,6 +1,7 @@
 import pandas as pn
 import heapq
 import time
+import math
 from collections import deque
 
 medellin = pn.read_csv('MedellinSH.csv', sep=';')
@@ -43,7 +44,8 @@ for row in medellin.itertuples(): #O(n)
 def calculate_distances(graph,starting_vertex,ending_vertex,operation):
     distances = {vertex: float('infinity') for vertex in graph} 
     path = []
-    operators = {'+': lambda x,y : x+y, '*': lambda x,y: x*y, '^': lambda x,y : x*x + y*y}
+    hs = 0
+    operators = {'+': lambda x,y : x+y, '*': lambda x,y: x*y, '^': lambda x,y : x*x * y*y}
 
     tracker = {vertex: float('infinity') for vertex in graph} 
     distances[starting_vertex] = 0
@@ -65,10 +67,11 @@ def calculate_distances(graph,starting_vertex,ending_vertex,operation):
                 distances[neighbor[0]] = distance
                 tracker[neighbor_] = current_vertex
                 if current_vertex not in path:
+                    hs += float(graph[current_vertex][i][1])
                     path.append(current_vertex)
                 heapq.heappush(pq, (distance, neighbor[0]))
             i+=1
-    print(distances[neighbor_])
+    # print(distances[neighbor_])
     return tracker 
 '''
     Backtracking the path in order to only know the nodes that we must use in the path
@@ -121,11 +124,22 @@ def crear_camino(graph,origen,destino,operacion):
 origen_ = "(-75.5778046, 6.2029412)" # Test 
 destino_ = "(-75.5762232, 6.266327)" # Test
 
+
+'''
+    Each call is to know the runtime execution of the path, We used this information inside the Technical report 
+'''
+
 start_time = time.time()
 path_1 = crear_camino(graph,origen_,destino_,'*')
+print("Runtime execution, first path => %s seconds. " % (time.time() - start_time))
+
+start_time = time.time()
 path_2 = crear_camino(graph,origen_,destino_,'+')
+print("Runtime execution, second path  => %s seconds. " % (time.time() - start_time))
+
+start_time = time.time()
 path_3 =crear_camino(graph,origen_,destino_,'^')
-print("Runtime execution => %s seconds. " % (time.time() - start_time))
+print("Runtime execution, third path => %s seconds. " % (time.time() - start_time))
 
 '''
     Pretty print of the loading bar 
@@ -134,3 +148,4 @@ for i in range(limite + 1):
     time.sleep(0.05)
     print(bar(i,limite,40), end = "\r")
 print("Ready!, you can open the HTML file via Live Server :)")
+
